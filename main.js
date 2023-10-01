@@ -1,4 +1,5 @@
 let listaDeItens = [];
+let itemAEditar;
 
 const formulario = document.getElementById("form-itens");
 const formularioImput = document.getElementById("receber-item");
@@ -58,12 +59,10 @@ function mostrarItem() {
                 <li class="item-compra is-flex is-justify-content-space-between" data-value="${index}">
                     <div>
                         <input type="checkbox" class="is-clickable" data-checkbox/>
-                        <input type="text" class="is-size-5" value="${elemento.valor}"></input>
+                        <input type="text" class="is-size-5" value="${elemento.valor}" ${index !== Number(itemAEditar) ? "disabled" : ""}></input>
                     </div>
                     <div>
-                        <button><i class="fa-regular fa-floppy-disk is-clickable"></i></button>
-                        <i class="fa-regular is-clickable fa-pen-to-square editar" data-editar></i>
-                        <i class="fa-solid fa-trash is-clickable deletar" data-deletar></i>
+                        ${index == Number(itemAEditar) ? '<button><i class="fa-regular fa-floppy-disk is-clickable"></i></button>' : '<i class="fa-regular is-clickable fa-pen-to-square editar" data-editar></i>'} <i class="fa-solid fa-trash is-clickable deletar" data-deletar></i>
                     </div>
                 </li>
             `;
@@ -72,6 +71,9 @@ function mostrarItem() {
 
     listarItemComprado();
     deletarItem();
+    editarItem();
+
+    console.log(listaDeItens);
 }
 
 function listarItemComprado () {
@@ -105,4 +107,40 @@ function deletarItem () {
             mostrarItem();
         })
     })
+}
+
+function editarItem () {
+
+    const iconeEditar = document.querySelectorAll("[data-editar]");
+
+    iconeEditar.forEach(i => {
+
+        i.addEventListener("click", evento => {
+
+            itemAEditar = evento.target.parentElement.parentElement.getAttribute("data-value");
+            mostrarItem();
+        })
+    })
+
+        const itemInput = document.querySelector(`[data-value="${itemAEditar}"] input[type="text"]`);
+        
+        if (itemInput) {
+            
+            itemInput.focus();
+            itemInput.addEventListener('keydown', event => {
+                    
+                if (event.key === 'Enter') {
+                    salvarEdicao();
+                }
+            })
+        }
+}
+
+function salvarEdicao() {
+
+    const itemEditado = document.querySelector(`[data-value="${itemAEditar}"] input[type="text"]`);
+    listaDeItens[itemAEditar].valor = itemEditado.value;
+    itemAEditar = -1;
+    itemEditado.setAttribute('disabled', true);
+    mostrarItem();
 }
