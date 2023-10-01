@@ -71,6 +71,7 @@ function mostrarItem() {
     });
 
     listarItemComprado();
+    deletarItem();
 }
 
 function listarItemComprado () {
@@ -88,4 +89,20 @@ function listarItemComprado () {
             mostrarItem();
         });
     });
+}
+
+function deletarItem () {
+
+    const deletarItem = document.querySelectorAll("[data-deletar]");
+
+    deletarItem.forEach(i => {
+
+        i.addEventListener("click", evento => {
+
+            const itemIndex = evento.target.parentElement.parentElement.getAttribute("data-value");
+
+            listaDeItens.splice(itemIndex, 1);
+            mostrarItem();
+        })
+    })
 }
